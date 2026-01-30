@@ -28,6 +28,7 @@ public class FireflyController : MonoBehaviour
     private float coreTimer = 0f;
     private Vector3 idleAnchor;
     private float idlePhase;
+    private bool isInPillar = false;
 
     void Start()
     {
@@ -48,16 +49,24 @@ public class FireflyController : MonoBehaviour
 
         stateTimer += Time.deltaTime;
 
+        TickCoreIfInside();
+
         if (isDragging)
         {
             DragUpdate(cam);
             return;
         }
 
+        if (isInPillar)
+        {
+            IdleWiggle(cam);
+            return;
+        }
+
         if (isIdle)
         {
             IdleWiggle(cam);
-            if (stateTimer >= minIdleDuration)
+            if (!isInPillar && stateTimer >= minIdleDuration)
             {
                 EnterMoveState(cam);
             }
@@ -67,20 +76,6 @@ public class FireflyController : MonoBehaviour
         // moving
         KeepWithinViewport(cam);
         transform.Translate(targetDirection * moveSpeed * Time.deltaTime, Space.World);
-
-        if (isInCore)
-        {
-            coreTimer += Time.deltaTime;
-            if (coreTimer >= coreTickInterval)
-            {
-                coreTimer -= coreTickInterval;
-                if (GameManager.Instance != null)
-                {
-                    GameManager.Instance.IncrementLightCount();
-                }
-                Debug.Log("Firefly ticking light inside core");
-            }
-        }
 
         if (stateTimer >= moveDuration)
         {
@@ -220,6 +215,11 @@ public class FireflyController : MonoBehaviour
             }
             Debug.Log("Firefly entered core, starting ticks.");
         }
+        else if (other.CompareTag("Pillar"))
+        {
+            isInPillar = true;
+            EnterIdleState();
+        }
     }
 
     void OnTriggerExit2D(Collider2D other)
@@ -228,6 +228,29 @@ public class FireflyController : MonoBehaviour
         {
             isInCore = false;
             coreTimer = 0f;
+        }
+        else if (other.CompareTag("Pillar"))
+        {
+            isInPillar = false;
+        }
+    }
+
+    void TickCoreIfInside()
+    {
+        if (!isInCore)
+        {
+            return;
+        }
+
+        coreTimer += Time.deltaTime;
+        if (coreTimer >= coreTickInterval)
+        {
+            coreTimer -= coreTickInterval;
+            if (GameManager.Instance != null)
+            {
+                GameManager.Instance.IncrementLightCount();
+            }
+            Debug.Log("Firefly ticking light inside core");
         }
     }
 }
