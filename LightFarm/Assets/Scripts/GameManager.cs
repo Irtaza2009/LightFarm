@@ -44,6 +44,7 @@ public class GameManager : MonoBehaviour
     {
         if (lightCount > 0)
         {
+            AudioManager.Instance.PlayClick();
             coinCount += lightCount;
             lightCount = 0;
             if (lightCountText != null)
@@ -59,17 +60,21 @@ public class GameManager : MonoBehaviour
 
     public void BuyCore()
     {
+        AudioManager.Instance.PlayClick();
         PlacementManager.Instance.StartPlacement(corePrefab);
     }
 
     public void BuyPillar()
     {
+        AudioManager.Instance.PlayClick();
         PlacementManager.Instance.StartPlacement(pillarPrefab);
     }
 
     public void BuyFirefly()
     {
-        PlacementManager.Instance.StartPlacement(fireflyPrefab);
+        AudioManager.Instance.PlayClick();
+        // instantiate firefly at random position near center
+        Instantiate(fireflyPrefab, new Vector3(Random.Range(-1f, 1f), Random.Range(-1f, 1f), 0f), Quaternion.identity);
     }
 
 }

@@ -57,12 +57,14 @@ public class PlacementManager : MonoBehaviour
 
     void PlaceObject()
     {
+        AudioManager.Instance.PlayPlacement();
         GameObject placed = Instantiate(prefabToPlace, previewObject.transform.position, Quaternion.identity);
         CleanupPreview();
     }
 
     void CancelPlacement()
     {
+        AudioManager.Instance.PlayClick();
         CleanupPreview();
     }
 
