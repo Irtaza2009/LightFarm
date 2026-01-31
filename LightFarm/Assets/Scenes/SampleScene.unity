@@ -201,7 +201,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 194881053}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 900685757}
+        m_TargetAssemblyTypeName: GameManager, Assembly-CSharp
+        m_MethodName: SellLight
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &194881053
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1258,6 +1270,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: '::'
   lightCountText: {fileID: 377156376}
+  coinCountText: {fileID: 478433174}
   corePrefab: {fileID: 6800938547696968518, guid: 682ef3bc3fc84294c8a35ee121889eef, type: 3}
   pillarPrefab: {fileID: 7628764445317558126, guid: 7b6f4b0ea3767de428c49cb1348a82e8, type: 3}
   fireflyPrefab: {fileID: 1250811386798104949, guid: 232ff75597bec80459922bc7cbdc46c9, type: 3}
