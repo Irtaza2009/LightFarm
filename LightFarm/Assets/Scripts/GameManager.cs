@@ -8,6 +8,11 @@ public class GameManager : MonoBehaviour
     private int lightCount = 0;
     public TMPro.TextMeshProUGUI lightCountText;
 
+    [Header("Prefabs")]
+    public GameObject corePrefab;
+    public GameObject pillarPrefab;
+    public GameObject fireflyPrefab;
+
     void Awake()
     {
         if (Instance == null)
@@ -32,4 +37,20 @@ public class GameManager : MonoBehaviour
         }
 
     }
+
+    public void BuyCore()
+    {
+        PlacementManager.Instance.StartPlacement(corePrefab);
+    }
+
+    public void BuyPillar()
+    {
+        PlacementManager.Instance.StartPlacement(pillarPrefab);
+    }
+
+    public void BuyFirefly()
+    {
+        PlacementManager.Instance.StartPlacement(fireflyPrefab);
+    }
+
 }
