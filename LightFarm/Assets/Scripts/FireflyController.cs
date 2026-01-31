@@ -29,6 +29,7 @@ public class FireflyController : MonoBehaviour
     private Vector3 idleAnchor;
     private float idlePhase;
     private bool isInPillar = false;
+    private PillarController currentPillar;
 
     void Start()
     {
@@ -217,8 +218,13 @@ public class FireflyController : MonoBehaviour
         }
         else if (other.CompareTag("Pillar"))
         {
-            isInPillar = true;
-            EnterIdleState();
+            PillarController pillar = other.GetComponent<PillarController>();
+            if (pillar != null && pillar.TryAddFirefly(this))
+            {
+                currentPillar = pillar;
+                isInPillar = true;
+                EnterIdleState();
+            }
         }
     }
 
@@ -231,7 +237,20 @@ public class FireflyController : MonoBehaviour
         }
         else if (other.CompareTag("Pillar"))
         {
+            if (currentPillar != null)
+            {
+                currentPillar.RemoveFirefly(this);
+                currentPillar = null;
+            }
             isInPillar = false;
+        }
+    }
+
+    void OnDestroy()
+    {
+        if (currentPillar != null)
+        {
+            currentPillar.RemoveFirefly(this);
         }
     }
 
