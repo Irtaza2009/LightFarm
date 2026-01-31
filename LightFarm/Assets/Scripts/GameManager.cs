@@ -28,7 +28,7 @@ public class GameManager : MonoBehaviour
         // update light count text
         if (lightCountText != null)
         {
-            lightCountText.text = "Light Count: " + lightCount;
+            lightCountText.text = "Light: " + lightCount;
         }
 
     }
