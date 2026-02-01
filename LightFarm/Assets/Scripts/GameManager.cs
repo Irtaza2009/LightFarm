@@ -6,7 +6,7 @@ public class GameManager : MonoBehaviour
     public static GameManager Instance;
 
     private int lightCount = 0;
-    private int coinCount = 0;
+    private int coinCount = 500;
     public TMPro.TextMeshProUGUI lightCountText;
     public TMPro.TextMeshProUGUI coinCountText;
 
@@ -115,7 +115,7 @@ public class GameManager : MonoBehaviour
 
         if (sellButtonText != null)
         {
-            sellButtonText.text = "Sell (" + lightCount + ")";
+            sellButtonText.text = "Get: " + lightCount;
         }
     }
 

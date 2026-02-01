@@ -218,6 +218,12 @@ public class FireflyController : MonoBehaviour
         }
         else if (other.CompareTag("Pillar"))
         {
+            // Only bind to one pillar at a time to avoid double counting when pillars overlap.
+            if (currentPillar != null)
+            {
+                return;
+            }
+
             PillarController pillar = other.GetComponent<PillarController>();
             if (pillar != null && pillar.TryAddFirefly(this))
             {
@@ -237,7 +243,7 @@ public class FireflyController : MonoBehaviour
         }
         else if (other.CompareTag("Pillar"))
         {
-            if (currentPillar != null)
+            if (currentPillar != null && other.GetComponent<PillarController>() == currentPillar)
             {
                 currentPillar.RemoveFirefly(this);
                 currentPillar = null;
