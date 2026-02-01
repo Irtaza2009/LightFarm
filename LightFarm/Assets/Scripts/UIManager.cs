@@ -8,6 +8,9 @@ public class UIManager : MonoBehaviour
     public GameObject settingsPanel;
     private bool settingsEnabled = false;
 
+    public GameObject leaderboardPanel;
+    private bool leaderboardEnabled = false;
+
     void Awake()
     {
         if (Instance != null && Instance != this)
@@ -37,6 +40,26 @@ public class UIManager : MonoBehaviour
         if (settingsPanel != null)
         {
             settingsPanel.SetActive(false);
+        }
+    }
+
+    public void ToggleLeaderboard()
+    {
+        leaderboardEnabled = !leaderboardEnabled;
+
+        if (leaderboardPanel != null)
+        {
+            leaderboardPanel.SetActive(leaderboardEnabled);
+        }
+    }
+
+    public void CloseLeaderboard()
+    {
+        leaderboardEnabled = false;
+
+        if (leaderboardPanel != null)
+        {
+            leaderboardPanel.SetActive(false);
         }
     }
 }

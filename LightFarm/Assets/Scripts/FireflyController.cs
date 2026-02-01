@@ -189,6 +189,8 @@ public class FireflyController : MonoBehaviour
             return;
         }
 
+        AudioManager.Instance.PlayTwinkle();
+
         isDragging = true;
         dragDepth = cam.WorldToScreenPoint(transform.position).z;
         Vector3 worldPoint = cam.ScreenToWorldPoint(new Vector3(mousePos.x, mousePos.y, dragDepth));

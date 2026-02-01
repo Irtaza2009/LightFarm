@@ -12,6 +12,7 @@ public class AudioManager : MonoBehaviour
     [Header("SFX")]
     public AudioClip clickClip;
     public AudioClip placementClip;
+    public AudioClip twinkleClip;
     [Range(0f, 1f)] public float sfxVolume = 0.9f;
     [Range(0f, 0.5f)] public float sfxPitchVariance = 0.05f;
 
@@ -115,6 +116,11 @@ public class AudioManager : MonoBehaviour
     public void PlayPlacement()
     {
         PlaySfx(placementClip);
+    }
+
+    public void PlayTwinkle()
+    {
+        PlaySfx(twinkleClip);
     }
 
     void PlaySfx(AudioClip clip)
