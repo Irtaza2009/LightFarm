@@ -5,6 +5,8 @@ public class PlacementManager : MonoBehaviour
 {
     public static PlacementManager Instance;
 
+    public LandArea[] landAreas;
+
     [Header("Placement")]
     public LayerMask placementMask; // ground / farm layer
     public Color previewColor = new Color(1, 1, 1, 0.5f);
@@ -65,13 +67,19 @@ public class PlacementManager : MonoBehaviour
         Vector3 snappedPos = CellToWorld(previewCell);
         previewObject.transform.position = snappedPos;
 
-        bool blocked = occupiedCells.Contains(previewCell);
+        bool blocked =
+            occupiedCells.Contains(previewCell) ||
+            !IsCellInsideUnlockedLand(previewCell);
+
         ApplyPreviewColor(blocked ? blockedPreviewColor : previewColor);
     }
 
     void PlaceObject()
     {
-        bool blocked = occupiedCells.Contains(previewCell);
+        bool blocked =
+            occupiedCells.Contains(previewCell) ||
+            !IsCellInsideUnlockedLand(previewCell);
+
         if (blocked)
         {
             AudioManager.Instance.PlayClick();
@@ -150,4 +158,19 @@ public class PlacementManager : MonoBehaviour
             sr.sortingOrder = previewSortingOrder;
         }
     }
+
+    bool IsCellInsideUnlockedLand(Vector2Int cell)
+    {
+        Vector3 center = CellToWorld(cell);
+
+        foreach (var land in landAreas)
+        {
+            if (land != null && land.unlocked && land.landCollider.bounds.Contains(center))
+                return true;
+        }
+
+        return false;
+    }
+
+
 }

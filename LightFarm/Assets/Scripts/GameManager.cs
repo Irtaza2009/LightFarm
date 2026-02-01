@@ -29,6 +29,13 @@ public class GameManager : MonoBehaviour
     public GameObject pillarPrefab;
     public GameObject fireflyPrefab;
 
+    [Header("Land Unlocks")]
+    public LandArea leftLand;
+    public LandArea rightLand;
+    public int leftLandCost = 100;
+    public int rightLandCost = 100;
+
+
     void Awake()
     {
         if (Instance == null)
@@ -139,5 +146,28 @@ public class GameManager : MonoBehaviour
     {
         return coinCount;
     }
+
+    public void BuyLeftLand()
+    {
+        if (coinCount < leftLandCost || leftLand.unlocked)
+            return;
+
+        AudioManager.Instance.PlayPlacement();
+        coinCount -= leftLandCost;
+        leftLand.Unlock();
+        UpdateCoinText();
+    }
+
+    public void BuyRightLand()
+    {
+        if (coinCount < rightLandCost || rightLand.unlocked)
+            return;
+
+        AudioManager.Instance.PlayPlacement();
+        coinCount -= rightLandCost;
+        rightLand.Unlock();
+        UpdateCoinText();
+    }
+
 
 }

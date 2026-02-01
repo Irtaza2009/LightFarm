@@ -3063,6 +3063,7 @@ GameObject:
   - component: {fileID: 519420031}
   - component: {fileID: 519420029}
   - component: {fileID: 519420030}
+  - component: {fileID: 519420033}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -3188,6 +3189,22 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &519420033
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 519420028}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9deb3350c6d9026419f2a098e863722c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CameraPanController
+  panSpeed: 0.15
+  smoothTime: 0.12
+  minX: -20
+  maxX: 20
 --- !u!1 &619394800
 GameObject:
   m_ObjectHideFlags: 0
@@ -3839,6 +3856,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a51bcb9c23826694b915697ce149dec4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: '::'
+  landAreas:
+  - {fileID: 1950099374}
+  - {fileID: 2133581631}
+  - {fileID: 1884909272}
   placementMask:
     serializedVersion: 2
     m_Bits: 0
@@ -4605,6 +4626,10 @@ MonoBehaviour:
   corePrefab: {fileID: 6800938547696968518, guid: 682ef3bc3fc84294c8a35ee121889eef, type: 3}
   pillarPrefab: {fileID: 7628764445317558126, guid: 7b6f4b0ea3767de428c49cb1348a82e8, type: 3}
   fireflyPrefab: {fileID: 1250811386798104949, guid: 232ff75597bec80459922bc7cbdc46c9, type: 3}
+  leftLand: {fileID: 1884909272}
+  rightLand: {fileID: 2133581631}
+  leftLandCost: 10000
+  rightLandCost: 10000
 --- !u!4 &900685758
 Transform:
   m_ObjectHideFlags: 0
@@ -4958,7 +4983,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Buy Pillar
+  m_text: Buy Land
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: aa7d9ed59ed8f6d49b04d38ea7f70bdb, type: 2}
   m_sharedMaterial: {fileID: 5735127637309763695, guid: aa7d9ed59ed8f6d49b04d38ea7f70bdb, type: 2}
@@ -5702,7 +5727,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 900685757}
         m_TargetAssemblyTypeName: GameManager, Assembly-CSharp
-        m_MethodName: BuyPillar
+        m_MethodName: BuyRightLand
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -7360,7 +7385,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 900685757}
         m_TargetAssemblyTypeName: GameManager, Assembly-CSharp
-        m_MethodName: BuyPillar
+        m_MethodName: BuyLeftLand
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -8301,6 +8326,8 @@ GameObject:
   - component: {fileID: 1884909269}
   - component: {fileID: 1884909271}
   - component: {fileID: 1884909270}
+  - component: {fileID: 1884909273}
+  - component: {fileID: 1884909272}
   m_Layer: 0
   m_Name: Ground-3
   m_TagString: Untagged
@@ -10442,7 +10469,7 @@ Tilemap:
     second:
       serializedVersion: 2
       m_TileIndex: 0
-      m_TileSpriteIndex: 1
+      m_TileSpriteIndex: 4
       m_TileMatrixIndex: 0
       m_TileColorIndex: 0
       m_TileObjectToInstantiateIndex: 65535
@@ -10795,14 +10822,14 @@ Tilemap:
   m_TileSpriteArray:
   - m_RefCount: 10
     m_Data: {fileID: 502846210, guid: cc6e6b3d6d0479444ae6e9bd5161c3cc, type: 3}
-  - m_RefCount: 1
-    m_Data: {fileID: -21050622, guid: cc6e6b3d6d0479444ae6e9bd5161c3cc, type: 3}
+  - m_RefCount: 0
+    m_Data: {fileID: 0}
   - m_RefCount: 17
     m_Data: {fileID: 2070650692, guid: cc6e6b3d6d0479444ae6e9bd5161c3cc, type: 3}
   - m_RefCount: 32
     m_Data: {fileID: -1941749337, guid: cc6e6b3d6d0479444ae6e9bd5161c3cc, type: 3}
-  - m_RefCount: 0
-    m_Data: {fileID: 0}
+  - m_RefCount: 1
+    m_Data: {fileID: -21050622, guid: cc6e6b3d6d0479444ae6e9bd5161c3cc, type: 3}
   - m_RefCount: 25
     m_Data: {fileID: 582855289, guid: cc6e6b3d6d0479444ae6e9bd5161c3cc, type: 3}
   - m_RefCount: 23
@@ -10875,6 +10902,60 @@ Tilemap:
     e31: 0
     e32: 0
     e33: 1
+--- !u!114 &1884909272
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1884909268}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2614356208a5c324c98c8605c2ce342c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::LandArea
+  unlocked: 0
+  landCollider: {fileID: 1884909273}
+  fogLight: {fileID: 477611672}
+  buttonPanel: {fileID: 357255827}
+--- !u!19719996 &1884909273
+TilemapCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1884909268}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_ForceSendLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ForceReceiveLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ContactCaptureLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_CallbackLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_CompositeOperation: 0
+  m_CompositeOrder: 0
+  m_Offset: {x: 0, y: 0}
+  m_MaximumTileChangeCount: 1000
+  m_ExtrusionFactor: 0
+  m_UseDelaunayMesh: 0
 --- !u!1 &1906038978
 GameObject:
   m_ObjectHideFlags: 0
@@ -11022,6 +11103,8 @@ GameObject:
   - component: {fileID: 1950099370}
   - component: {fileID: 1950099372}
   - component: {fileID: 1950099371}
+  - component: {fileID: 1950099374}
+  - component: {fileID: 1950099373}
   m_Layer: 0
   m_Name: Ground
   m_TagString: Untagged
@@ -13835,6 +13918,60 @@ Tilemap:
     e31: 0
     e32: 0
     e33: 1
+--- !u!19719996 &1950099373
+TilemapCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1950099369}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_ForceSendLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ForceReceiveLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ContactCaptureLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_CallbackLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_CompositeOperation: 0
+  m_CompositeOrder: 0
+  m_Offset: {x: 0, y: 0}
+  m_MaximumTileChangeCount: 1000
+  m_ExtrusionFactor: 0
+  m_UseDelaunayMesh: 0
+--- !u!114 &1950099374
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1950099369}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2614356208a5c324c98c8605c2ce342c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: '::'
+  unlocked: 1
+  landCollider: {fileID: 1950099373}
+  fogLight: {fileID: 0}
+  buttonPanel: {fileID: 0}
 --- !u!1 &1951337824
 GameObject:
   m_ObjectHideFlags: 0
@@ -13892,7 +14029,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Buy Pillar
+  m_text: Buy Land
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: aa7d9ed59ed8f6d49b04d38ea7f70bdb, type: 2}
   m_sharedMaterial: {fileID: 5735127637309763695, guid: aa7d9ed59ed8f6d49b04d38ea7f70bdb, type: 2}
@@ -14386,6 +14523,8 @@ GameObject:
   - component: {fileID: 2133581627}
   - component: {fileID: 2133581629}
   - component: {fileID: 2133581628}
+  - component: {fileID: 2133581631}
+  - component: {fileID: 2133581630}
   m_Layer: 0
   m_Name: Ground-2
   m_TagString: Untagged
@@ -16960,6 +17099,60 @@ Tilemap:
     e31: 0
     e32: 0
     e33: 1
+--- !u!19719996 &2133581630
+TilemapCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2133581626}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_ForceSendLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ForceReceiveLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ContactCaptureLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_CallbackLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_CompositeOperation: 0
+  m_CompositeOrder: 0
+  m_Offset: {x: 0, y: 0}
+  m_MaximumTileChangeCount: 1000
+  m_ExtrusionFactor: 0
+  m_UseDelaunayMesh: 0
+--- !u!114 &2133581631
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2133581626}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2614356208a5c324c98c8605c2ce342c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::LandArea
+  unlocked: 0
+  landCollider: {fileID: 2133581630}
+  fogLight: {fileID: 472602127}
+  buttonPanel: {fileID: 352634879}
 --- !u!1001 &853689230791633204
 PrefabInstance:
   m_ObjectHideFlags: 0

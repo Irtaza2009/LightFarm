@@ -16,6 +16,9 @@ public class FireflyController : MonoBehaviour
     [Header("Core Scoring")]
     public float coreTickInterval = 1.5f;
 
+    private static int draggingCount = 0;
+    public static bool AnyDragging => draggingCount > 0;
+
     private Vector3 targetDirection;
     private float stateTimer = 0f;
     private bool isIdle = true;
@@ -144,6 +147,10 @@ public class FireflyController : MonoBehaviour
 
         if (isDragging && Input.GetMouseButtonUp(0))
         {
+            if (isDragging)
+            {
+                draggingCount = Mathf.Max(0, draggingCount - 1);
+            }
             isDragging = false;
             EnterIdleState();
         }
@@ -192,6 +199,7 @@ public class FireflyController : MonoBehaviour
         AudioManager.Instance.PlayTwinkle();
 
         isDragging = true;
+        draggingCount++;
         dragDepth = cam.WorldToScreenPoint(transform.position).z;
         Vector3 worldPoint = cam.ScreenToWorldPoint(new Vector3(mousePos.x, mousePos.y, dragDepth));
         dragOffset = transform.position - worldPoint;
@@ -259,6 +267,11 @@ public class FireflyController : MonoBehaviour
         if (currentPillar != null)
         {
             currentPillar.RemoveFirefly(this);
+        }
+
+        if (isDragging)
+        {
+            draggingCount = Mathf.Max(0, draggingCount - 1);
         }
     }
 
