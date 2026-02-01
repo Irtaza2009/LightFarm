@@ -21,21 +21,37 @@ public class Leaderboard : MonoBehaviour
     {
         LeaderboardCreator.GetLeaderboard(publicLeaderboardKey, ((msg) =>
         {
+            Debug.Log($"Leaderboard returned {msg.Length} entries");
             int loopLength = Mathf.Min(msg.Length, playerNameTexts.Count);
             for (int i = 0; i < loopLength; ++i)
             {
                 playerNameTexts[i].text = msg[i].Username;
                 playerScoreTexts[i].text = msg[i].Score.ToString();
             }
+
+            // Clear unused slots so old names don't linger when fewer results are returned.
+            for (int i = loopLength; i < playerNameTexts.Count; ++i)
+            {
+                playerNameTexts[i].text = "-";
+                playerScoreTexts[i].text = "-";
+            }
         }));
     }
 
     public void SetLeaderboardEntry(string username, int score)
     {
-        LeaderboardCreator.UploadNewEntry(publicLeaderboardKey, username, score, (msg) =>
+        // To allow multiple submissions from the same device/session, reset the player ID before uploading.
+        // This is needed when the leaderboard has unique usernames enabled, which otherwise overwrites the previous entry.
+        LeaderboardCreator.ResetPlayer(() =>
         {
-            Debug.Log("Leaderboard entry set: " + msg);
-            GetLeaderboard();
+            LeaderboardCreator.UploadNewEntry(publicLeaderboardKey, username, score, (msg) =>
+            {
+                Debug.Log("Leaderboard entry set: " + msg);
+                GetLeaderboard();
+            }, (error) =>
+            {
+                Debug.LogError("Upload error: " + error);
+            });
         });
     }
 

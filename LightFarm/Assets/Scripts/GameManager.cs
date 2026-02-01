@@ -135,9 +135,9 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    public int GetLightCount()
+    public int GetCoinCount()
     {
-        return lightCount;
+        return coinCount;
     }
 
 }

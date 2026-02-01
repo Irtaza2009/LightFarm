@@ -11,6 +11,6 @@ public class InputManager : MonoBehaviour
 
     public void SubmitScore()
     {
-        submitScoreEvent.Invoke(inputName.text, GameManager.Instance.GetLightCount());
+        submitScoreEvent.Invoke(inputName.text, GameManager.Instance.GetCoinCount());
     }
 }
