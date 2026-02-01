@@ -44,7 +44,8 @@ public class FireflyController : MonoBehaviour
     void Update()
     {
         var cam = Camera.main;
-        if (cam == null)
+
+        if (cam == null && isDragging)
         {
             return;
         }
@@ -72,13 +73,13 @@ public class FireflyController : MonoBehaviour
             IdleWiggle(cam);
             if (!isInPillar && stateTimer >= minIdleDuration)
             {
-                EnterMoveState(cam);
+                EnterMoveState();
             }
             return;
         }
 
         // moving
-        KeepWithinViewport(cam);
+        KeepWithinLand();
         transform.Translate(targetDirection * moveSpeed * Time.deltaTime, Space.World);
 
         if (stateTimer >= moveDuration)
@@ -96,24 +97,31 @@ public class FireflyController : MonoBehaviour
         idlePhase = Random.Range(0f, Mathf.PI * 2f);
     }
 
-    void EnterMoveState(Camera cam)
+    void EnterMoveState()
     {
         isIdle = false;
         stateTimer = 0f;
-        ChooseNewDirection(cam);
+        ChooseNewDirection();
     }
 
-    void ChooseNewDirection(Camera cam)
+    void ChooseNewDirection()
     {
-        Vector3 viewportPos = cam.WorldToViewportPoint(transform.position);
+        if (!TryGetActiveBounds(out Bounds bounds))
+        {
+            targetDirection = Vector3.zero;
+            return;
+        }
 
-        // toward center if near edge
-        bool nearEdge = viewportPos.x < viewportPadding || viewportPos.x > 1f - viewportPadding ||
-                        viewportPos.y < viewportPadding || viewportPos.y > 1f - viewportPadding;
+        float padX = bounds.extents.x * viewportPadding;
+        float padY = bounds.extents.y * viewportPadding;
+        Vector3 pos = transform.position;
+
+        bool nearEdge = pos.x < bounds.min.x + padX || pos.x > bounds.max.x - padX ||
+                        pos.y < bounds.min.y + padY || pos.y > bounds.max.y - padY;
 
         if (nearEdge)
         {
-            Vector2 toCenter = new Vector2(0.5f - viewportPos.x, 0.5f - viewportPos.y);
+            Vector2 toCenter = bounds.center - pos;
             targetDirection = new Vector3(toCenter.x, toCenter.y, 0f).normalized;
         }
         else
@@ -123,23 +131,32 @@ public class FireflyController : MonoBehaviour
         }
     }
 
-    void KeepWithinViewport(Camera cam)
+    void KeepWithinLand()
     {
-        Vector3 viewportPos = cam.WorldToViewportPoint(transform.position);
-        viewportPos.x = Mathf.Clamp(viewportPos.x, viewportPadding, 1f - viewportPadding);
-        viewportPos.y = Mathf.Clamp(viewportPos.y, viewportPadding, 1f - viewportPadding);
-        transform.position = cam.ViewportToWorldPoint(viewportPos);
-
-        if (viewportPos.x <= viewportPadding || viewportPos.x >= 1f - viewportPadding ||
-            viewportPos.y <= viewportPadding || viewportPos.y >= 1f - viewportPadding)
+        if (!TryGetActiveBounds(out Bounds bounds))
         {
-            Vector2 toCenter = new Vector2(0.5f - viewportPos.x, 0.5f - viewportPos.y);
+            return;
+        }
+
+        Vector3 pos = transform.position;
+        float clampedX = Mathf.Clamp(pos.x, bounds.min.x, bounds.max.x);
+        float clampedY = Mathf.Clamp(pos.y, bounds.min.y, bounds.max.y);
+        transform.position = new Vector3(clampedX, clampedY, pos.z);
+
+        if (pos.x <= bounds.min.x || pos.x >= bounds.max.x || pos.y <= bounds.min.y || pos.y >= bounds.max.y)
+        {
+            Vector2 toCenter = bounds.center - transform.position;
             targetDirection = new Vector3(toCenter.x, toCenter.y, 0f).normalized;
         }
     }
 
     void HandleDragInput(Camera cam)
     {
+        if (cam == null)
+        {
+            return;
+        }
+
         if (Input.GetMouseButtonDown(0))
         {
             TryStartDrag(cam);
@@ -158,13 +175,23 @@ public class FireflyController : MonoBehaviour
 
     void DragUpdate(Camera cam)
     {
+        if (cam == null)
+        {
+            return;
+        }
+
         Vector3 worldPoint = cam.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, dragDepth));
         transform.position = worldPoint + dragOffset;
-        KeepWithinViewport(cam);
+        KeepWithinLand();
     }
 
     void TryStartDrag(Camera cam)
     {
+        if (cam == null)
+        {
+            return;
+        }
+
         if (isDragging)
         {
             return;
@@ -210,8 +237,60 @@ public class FireflyController : MonoBehaviour
         float theta = idlePhase + Time.time * idleLoopSpeed;
         Vector3 offset = new Vector3(Mathf.Cos(theta), Mathf.Sin(theta), 0f) * idleLoopRadius;
         transform.position = idleAnchor + offset;
-        KeepWithinViewport(cam);
+        KeepWithinLand();
         idleAnchor = transform.position;
+    }
+
+    bool TryGetActiveBounds(out Bounds bounds)
+    {
+        bounds = new Bounds();
+
+        if (PlacementManager.Instance == null || PlacementManager.Instance.landAreas == null)
+        {
+            return false;
+        }
+
+        Bounds? candidate = null;
+        float bestDistance = float.MaxValue;
+        Vector3 pos = transform.position;
+
+        foreach (var land in PlacementManager.Instance.landAreas)
+        {
+            if (land == null || !land.unlocked || land.landCollider == null)
+            {
+                continue;
+            }
+
+            Bounds b = land.landCollider.bounds;
+
+            if (b.Contains(pos))
+            {
+                bounds = b;
+                return true;
+            }
+
+            float dist = SqrDistanceToBounds(b, pos);
+            if (dist < bestDistance)
+            {
+                bestDistance = dist;
+                candidate = b;
+            }
+        }
+
+        if (candidate.HasValue)
+        {
+            bounds = candidate.Value;
+            return true;
+        }
+
+        return false;
+    }
+
+    float SqrDistanceToBounds(Bounds b, Vector3 p)
+    {
+        float dx = Mathf.Max(b.min.x - p.x, 0f, p.x - b.max.x);
+        float dy = Mathf.Max(b.min.y - p.y, 0f, p.y - b.max.y);
+        return dx * dx + dy * dy;
     }
 
     void OnTriggerEnter2D(Collider2D other)
