@@ -6,7 +6,7 @@ public class GameManager : MonoBehaviour
     public static GameManager Instance;
 
     private int lightCount = 0;
-    private int coinCount = 500;
+    private int coinCount = 30;
     public TMPro.TextMeshProUGUI lightCountText;
     public TMPro.TextMeshProUGUI coinCountText;
 
@@ -144,6 +144,11 @@ public class GameManager : MonoBehaviour
     public int GetCoinCount()
     {
         return coinCount;
+    }
+
+    public int GetLightCount()
+    {
+        return lightCount;
     }
 
     public void BuyLeftLand()

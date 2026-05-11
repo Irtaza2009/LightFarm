@@ -12,6 +12,8 @@ public class PillarController : MonoBehaviour
 
     private readonly HashSet<FireflyController> fireflies = new HashSet<FireflyController>();
 
+    public int FireflyCount => fireflies.Count;
+
     public bool TryAddFirefly(FireflyController firefly)
     {
         if (firefly == null)

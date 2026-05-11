@@ -1,9 +1,12 @@
 using System.Collections.Generic;
+using System;
 using UnityEngine;
 
 public class PlacementManager : MonoBehaviour
 {
     public static PlacementManager Instance;
+
+    public event Action<GameObject> ObjectPlaced;
 
     public LandArea[] landAreas;
 
@@ -89,6 +92,7 @@ public class PlacementManager : MonoBehaviour
         AudioManager.Instance.PlayPlacement();
         GameObject placed = Instantiate(prefabToPlace, previewObject.transform.position, Quaternion.identity);
         occupiedCells.Add(previewCell);
+        ObjectPlaced?.Invoke(placed);
         CleanupPreview();
     }
 
