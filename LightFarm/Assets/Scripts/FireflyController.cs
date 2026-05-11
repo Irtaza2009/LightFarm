@@ -303,7 +303,6 @@ public class FireflyController : MonoBehaviour
             {
                 GameManager.Instance.IncrementLightCount();
             }
-            Debug.Log("Firefly entered core, starting ticks.");
         }
         else if (other.CompareTag("Pillar"))
         {
@@ -369,7 +368,6 @@ public class FireflyController : MonoBehaviour
             {
                 GameManager.Instance.IncrementLightCount();
             }
-            Debug.Log("Firefly ticking light inside core");
         }
     }
 }

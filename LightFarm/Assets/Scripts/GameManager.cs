@@ -54,7 +54,6 @@ public class GameManager : MonoBehaviour
     public void IncrementLightCount()
     {
         lightCount++;
-        Debug.Log("Light: " + lightCount);
         UpdateLightAndSellText();
     }
 
